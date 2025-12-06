@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- App Configuration for Android/iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffffff">
+
+    <title>Calculator Pro</title>
+
+    <!-- Popunder Ad Script (Only loads when internet is available) -->
+    <script type="text/javascript" src="//pl26725839.effectivegatecpm.com/02/e9/1c/02e91c43bf882e8b1ffe8fc71bdf1553.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none; /* Prevents text selection like an app */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            font-family: 'Google Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Banner Ad Container - Fixed height so layout doesn't jump */
+        .ad-container {
+            width: 100%;
+            height: 90px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        /* Message when offline (Optional - Hidden by default) */
+        .offline-msg {
+            font-size: 12px;
+            color: #999;
+            display: none;
+        }
+
+        /* Calculator Display Area */
+        .display-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            padding: 20px;
+            width: 100%;
+            background-color: #fff;
+        }
+
+        /* Branding Text inside Screen */
+        .branding {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 14px;
+            color: #bdc1c6; /* Soft Gray */
+            font-weight: 500;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        #history {
+            font-size: 18px;
+            color: #70757a;
+            min-height: 24px;
+            margin-bottom: 5px;
+            padding-right: 5px;
+            text-align: right;
+            width: 100%;
+        }
+
+        #output {
+            font-size: 55px;
+            color: #202124;
+            border: none;
+            background: transparent;
+            text-align: right;
+            width: 100%;
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Keypad Container */
+        .keypad-container {
+            padding: 10px;
+            padding-bottom: 20px;
+            background: #ffffff;
+            flex-shrink: 0;
+        }
+
+        /* Toggle Buttons (123 | Fx) */
+        .toggle-wrapper {
+            display: flex;
+            margin-bottom: 8px;
+            padding: 0 5px;
+        }
+
+        .toggle-btn {
+            font-size: 14px;
+            color: #1a73e8;
+            font-weight: 500;
+            padding: 6px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .toggle-btn.active {
+            background-color: #e8f0fe;
+            color: #1967d2;
+            border-color: #d2e3fc;
+        }
+
+        /* Buttons Grid */
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        button {
+            width: 23%;
+            height: 60px; /* Adjusted for mobile fit */
+            border-radius: 50px;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            font-family: 'Google Sans', sans-serif;
+            transition: transform 0.1s, background-color 0.2s;
+            margin: 0 1%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            filter: brightness(0.9);
+        }
+
+        /* Button Colors */
+        .btn-num { background-color: #f1f3f4; color: #202124; }
+        .btn-op { background-color: #e8f0fe; color: #1a73e8; font-size: 26px; }
+        .btn-top { background-color: #f1f3f4; color: #202124; font-size: 20px; }
+        .btn-eq { background-color: #4285f4; color: white; font-size: 30px; }
+        
+        /* Panels */
+        #panel-fx { display: none; }
+        #panel-123 { display: block; }
+        
+        /* Responsive Fixes for very small screens */
+        @media (max-height: 600px) {
+            button { height: 50px; font-size: 20px; }
+            #output { font-size: 40px; }
+            .ad-container { min-height: 50px; height: auto; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Banner Ad Section -->
+    <div class="ad-container">
+        <!-- The script will try to load ads. If offline, it fails silently but space remains -->
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '07fa8f3826d917483467189eb9a31987',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/07fa8f3826d917483467189eb9a31987/invoke.js"></script>
+        <div class="offline-msg" id="offline-indicator">No Internet - Ad Hidden</div>
+    </div>
+
+    <!-- Display Screen -->
+    <div class="display-area">
+        <!-- Branding inside screen -->
+        <div class="branding">Developed by MUNNA</div>
+
+        <div id="history"></div>
+        <input type="text" id="output" value="0" readonly>
+    </div>
+
+    <!-- Keypad Controls -->
+    <div class="keypad-container">
+        
+        <div class="toggle-wrapper">
+            <div class="toggle-btn active" id="mode-123" onclick="setMode('123')">123</div>
+            <div class="toggle-btn" id="mode-fx" onclick="setMode('fx')">Fx</div>
+        </div>
+
+        <!-- 123 Standard Panel -->
+        <div id="panel-123">
+            <div class="row">
+                <button class="btn-top" onclick="clearCalc()">AC</button>
+                <button class="btn-top" onclick="del()">⌫</button>
+                <button class="btn-top" onclick="addChar('%')">%</button>
+                <button class="btn-op" onclick="addChar('/')">÷</button>
+            </div>
+            <div class="row">
+                <button class="btn-num" onclick="addChar('7')">7</button>
+                <button class="btn-num" onclick="addChar('8')">8</button>
+                <button class="btn-num" onclick="addChar('9')">9</button>
+                <button class="btn-op" onclick="addChar('*')">×</button>
+            </div>
+            <div class="row">
+                <button class="btn-num" onclick="addChar('4')">4</button>
+                <button class="btn-num" onclick="addChar('5')">5</button>
+                <button class="btn-num" onclick="addChar('6')">6</button>
+                <button class="btn-op" onclick="addChar('-')">−</button>
+            </div>
+            <div class="row">
+                <button class="btn-num" onclick="addChar('1')">1</button>
+                <button class="btn-num" onclick="addChar('2')">2</button>
+                <button class="btn-num" onclick="addChar('3')">3</button>
+                <button class="btn-op" onclick="addChar('+')">+</button>
+            </div>
+            <div class="row">
+                <button class="btn-num" onclick="addChar('00')">00</button>
+                <button class="btn-num" onclick="addChar('0')">0</button>
+                <button class="btn-num" onclick="addChar('.')">.</button>
+                <button class="btn-eq" onclick="calculate()">=</button>
+            </div>
+        </div>
+
+        <!-- FX Scientific Panel -->
+        <div id="panel-fx">
+            <div class="row">
+                <button class="btn-top" onclick="clearCalc()">AC</button>
+                <button class="btn-op" onclick="square()">x²</button>
+                <button class="btn-op" onclick="addChar('^')">^</button>
+                <button class="btn-op" onclick="addChar('!')">!</button>
+            </div>
+            <div class="row">
+                <button class="btn-num" onclick="addChar('sin(')">sin</button>
+                <button class="btn-num" onclick="addChar('cos(')">cos</button>
+                <button class="btn-num" onclick="addChar('tan(')">tan</button>
+                <button class="btn-op" onclick="addChar('/')">÷</button>
+            </div>
+            <div class="row">
+                <button class="btn-num" onclick="addChar('ln(')">ln</button>
+                <button class="btn-num" onclick="addChar('log(')">log</button>
+                <button class="btn-num" onclick="addChar('√(')">√</button>
+                <button class="btn-op" onclick="addChar('*')">×</button>
+            </div>
+            <div class="row">
+                <button class="btn-num" onclick="addChar('π')">π</button>
+                <button class="btn-num" onclick="addChar('(')">(</button>
+                <button class="btn-num" onclick="addChar(')')">)</button>
+                <button class="btn-op" onclick="addChar('-')">−</button>
+            </div>
+            <div class="row">
+                <button class="btn-num" onclick="addChar('.')">.</button>
+                <button class="btn-num" onclick="addChar('0')">0</button>
+                <button class="btn-top" onclick="del()">⌫</button>
+                <button class="btn-eq" onclick="calculate()">=</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let output = document.getElementById("output");
+        let history = document.getElementById("history");
+
+        // --- Offline/Online Handler (Just for visual adjustment) ---
+        window.addEventListener('offline', function() {
+            document.getElementById('offline-indicator').style.display = 'block';
+        });
+        window.addEventListener('online', function() {
+            document.getElementById('offline-indicator').style.display = 'none';
+        });
+
+        // --- Mode Switching ---
+        function setMode(mode) {
+            document.getElementById('mode-123').classList.remove('active');
+            document.getElementById('mode-fx').classList.remove('active');
+            
+            if(mode === '123') {
+                document.getElementById('mode-123').classList.add('active');
+                document.getElementById('panel-123').style.display = 'block';
+                document.getElementById('panel-fx').style.display = 'none';
+            } else {
+                document.getElementById('mode-fx').classList.add('active');
+                document.getElementById('panel-123').style.display = 'none';
+                document.getElementById('panel-fx').style.display = 'block';
+            }
+        }
+
+        // --- Calculator Logic (Works Offline) ---
+        function addChar(char) {
+            if(output.value === '0' || output.value === 'Error') {
+                output.value = char;
+            } else {
+                output.value += char;
+            }
+        }
+
+        function clearCalc() {
+            output.value = '0';
+            history.innerText = '';
+        }
+
+        function del() {
+            output.value = output.value.slice(0, -1);
+            if(output.value === '') output.value = '0';
+        }
+
+        function square() {
+            try {
+                let val = eval(output.value); 
+                history.innerText = `sqr(${val})`;
+                output.value = Math.pow(val, 2);
+            } catch {
+                output.value = 'Error';
+            }
+        }
+
+        function factorial(n) {
+            return (n != 1) ? n * factorial(n - 1) : 1;
+        }
+
+        function calculate() {
+            try {
+                let expression = output.value;
+                history.innerText = expression + " =";
+
+                // Convert Visual Symbols to JavaScript Math
+                expression = expression.replace(/×/g, '*')
+                                       .replace(/÷/g, '/')
+                                       .replace(/\^/g, '**')
+                                       .replace(/π/g, 'Math.PI')
+                                       .replace(/e/g, 'Math.E')
+                                       .replace(/sin/g, 'Math.sin')
+                                       .replace(/cos/g, 'Math.cos')
+                                       .replace(/tan/g, 'Math.tan')
+                                       .replace(/log/g, 'Math.log10')
+                                       .replace(/ln/g, 'Math.log')
+                                       .replace(/√/g, 'Math.sqrt');
+
+                if (expression.includes('!')) {
+                    let num = parseInt(expression.replace('!', ''));
+                    output.value = factorial(num);
+                } else {
+                    let result = eval(expression);
+                    // Check for infinite or NaN
+                    if(!isFinite(result)) throw "Error";
+                    output.value = result;
+                }
+            } catch (err) {
+                output.value = "Error";
+            }
+        }
+    </script>
+</body>
+</html>
